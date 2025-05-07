@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Мій сайт</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header><h1>Вітання на нашому сайті!</h1></header>
+    <main id="news-container"></main>
+    <footer><a href="/admin.html">Адмін-панель</a></footer>
+
+    <script>
+      fetch("/api/news")
+        .then((res) => res.json())
+        .then((data) => {
+          const container = document.getElementById("news-container");
+          data.forEach((news) => {
+            const item = document.createElement("div");
+            item.innerHTML = `<h3>${news.title}</h3><p>${news.content}</p>`;
+            container.appendChild(item);
+          });
+        });
+    </script>
+  </body>
+</html>

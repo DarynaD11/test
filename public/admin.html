@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel</title>
+  </head>
+  <body>
+    <h1>Admin Panel</h1>
+
+    <h2>Add News</h2>
+    <form action="/admin/add-news" method="POST">
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+      </div>
+      <div>
+        <label for="title">News Title</label>
+        <input type="text" id="title" name="title" required />
+      </div>
+      <div>
+        <label for="content">News Content</label>
+        <textarea id="content" name="content" required></textarea>
+      </div>
+      <button type="submit">Add News</button>
+    </form>
+
+    <form action="/admin/logout" method="POST">
+      <button type="submit">Log out</button>
+    </form>
+  </body>
+</html>
