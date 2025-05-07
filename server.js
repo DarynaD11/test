@@ -4,82 +4,79 @@ const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const app = express();
-const newsRoutes = require("./routes/news"); // Для роботи з новинами
+const newsRoutes = require("./routes/news"); // Імпортуємо маршрути новин
+require("dotenv").config(); // Для використання змінних середовища
 
-// Твій секретний пароль
-const ADMIN_PASSWORD = "yourPasswordHere"; // Заміни на свій пароль
+// Твій секретний пароль (переміщаємо в середовище)
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; // Перемістіть це в .env файл
 
-// Хешуємо пароль один раз при старті сервера
+// Хешуємо пароль при старті сервера
 let hashedPassword;
 bcrypt.hash(ADMIN_PASSWORD, 10, (err, hash) => {
   if (err) throw err;
   hashedPassword = hash;
 });
 
-// Міддлвар для перевірки пароля
-function checkAdminPassword(req, res, next) {
-  const { password } = req.body;
-
-  // Якщо користувач уже авторизований через сесію
+// Middleware для перевірки сесії
+function isAuthenticated(req, res, next) {
   if (req.session.authenticated) {
-    return next(); // Пропускаємо перевірку пароля
+    return next();
   }
-
-  // Перевіряємо введений пароль з хешованим
-  bcrypt.compare(password, hashedPassword, (err, result) => {
-    if (err) throw err;
-    if (result) {
-      req.session.authenticated = true; // Зберігаємо авторизацію в сесії
-      return next(); // Пропускаємо перевірку пароля
-    } else {
-      res.status(401).send("Unauthorized: Incorrect password");
-    }
-  });
+  res.status(401).send("Unauthorized");
 }
 
-// Використовуємо body-parser для зчитування POST даних
+
+
+// Body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Налаштування сесій
+// Сесії
 app.use(
   session({
-    secret: "secret-key", // Ваш секретний ключ
+    secret: process.env.SESSION_SECRET || "secret-key", // Секретний ключ для сесії з середовища
     resave: false,
     saveUninitialized: true,
   })
 );
 
-// Статичні файли (CSS, JS, зображення)
+app.use("/api/news", isAuthenticated, newsRoutes);
+
+// Статичні файли (CSS, JS, зображення, HTML)
 app.use(express.static(path.join(__dirname, "public")));
 
-// Маршрут для адмін-панелі
-app.get("/admin.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "admin.html"));
-});
+// -------------------- API маршрути --------------------
 
-// Маршрут для додавання новини через адмін-панель
-app.post("/admin/add-news", checkAdminPassword, (req, res) => {
-  const { title, content } = req.body;
-  // Викликаємо функцію додавання новини з `news.js`
-  newsRoutes.addNews(title, content)
-    .then(() => res.send("News added successfully"))
-    .catch((err) => res.status(500).send(err));
-});
+// Авторизація: логін
+app.post("/api/login", (req, res) => {
+  const { password } = req.body;
 
-// Маршрут для виходу з адмінки (сесія буде знищена)
-app.post("/admin/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).send("Failed to log out.");
-    res.send("Logged out successfully.");
+  bcrypt.compare(password, hashedPassword, (err, result) => {
+    if (err) return res.status(500).send("Server error");
+    if (result) {
+      req.session.authenticated = true;
+      res.sendStatus(200); // OK
+    } else {
+      res.sendStatus(401); // Unauthorized
+    }
   });
 });
 
-// Маршрут для новин
-app.use("/api/news", newsRoutes);
+// Вихід
+app.post("/admin/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) return res.status(500).send("Logout failed");
+    res.sendStatus(200); // OK
+  });
+});
+
+// Видача адмін-панелі
+app.get("/admin.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+});
 
 // Запуск сервера
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
 });

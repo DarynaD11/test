@@ -18,18 +18,32 @@ router.get("/", (req, res) => {
   });
 });
 
-// Функція для додавання новини
-router.addNews = (title, content) => {
-  return new Promise((resolve, reject) => {
-    db.run(
-      "INSERT INTO news (title, content) VALUES (?, ?)",
-      [title, content],
-      function (err) {
-        if (err) reject(err);
-        resolve({ id: this.lastID });
-      }
-    );
+// Додавання новини
+router.post("/add-news", (req, res) => {
+  const { title, content } = req.body;
+  db.run(
+    "INSERT INTO news (title, content) VALUES (?, ?)",
+    [title, content],
+    function (err) {
+      if (err) return res.status(500).send(err);
+      res.status(201).send({ id: this.lastID });
+    }
+  );
+});
+
+// Видалення новини
+router.delete("/delete-news/:id", (req, res) => {
+  const { id } = req.params;
+  db.run("DELETE FROM news WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error(`Error deleting news with ID: ${id}`, err);
+      return res.status(500).send("Error deleting news");
+    }
+    if (this.changes === 0) {
+      return res.status(404).send("News not found");
+    }
+    res.send("News deleted successfully");
   });
-};
+});
 
 module.exports = router;
