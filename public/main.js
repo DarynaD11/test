@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const mobMenuModule = await import("./js/mob-menu.js");
 
   infoBtnModule.init?.();
-  mobMenuModule.init?.();
+  mobMenuModule.init?.(); // Тільки після того, як #mob-menu вже є в DOM
 });
 
 // Структура змагань для кожного року (може бути отримано з бази даних через адмінку)
@@ -124,5 +124,3 @@ document.querySelector(".next-btn").addEventListener("click", () => {
 
 // Початкове завантаження даних
 updateCompetitionsTable();
-
-

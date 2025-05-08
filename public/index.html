@@ -1,40 +1,36 @@
 <!DOCTYPE html>
 <html lang="ua">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ASTMK</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./css/styles.css" />
-  </head>
 
-  <body>
-    <div id="header"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASTMK</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
 
-    <main>
-      <div id="hero"></div>
-      <!-- <div id="informations"></div>
+<body>
+  <div id="header"></div>
+
+  <main>
+    <div id="hero"></div>
+    <!-- <div id="informations"></div>
       <div id="competitions"></div>
       <div id="news"></div>
-      <div id="partners"></div>
-      <div id="mob-menu"></div> -->
-    </main>
-    <footer>
-      <!-- <div id="footer"></div>
+      <div id="partners"></div> -->
+    <div id="mob-menu"></div>
+  </main>
+  <footer>
+    <!-- <div id="footer"></div>
       <button id="admin-btn">Адмін-панель</button> -->
-    </footer>
+  </footer>
 
-    <!-- Модальне вікно -->
-    <!-- <div id="login-modal" class="modal">
+  <!-- Модальне вікно -->
+  <!-- <div id="login-modal" class="modal">
       <div class="modal-content">
         <h3>Увійти як Адміністратор</h3>
         <form id="login-form">
@@ -48,69 +44,71 @@
         </form>
       </div>
     </div> -->
-    <script>
-      // Функція для завантаження HTML в елемент
-      function loadHTML(elementId, filePath) {
-        fetch(filePath)
-          .then((response) => response.text())
-          .then((data) => {
-            document.getElementById(elementId).innerHTML = data;
-          })
-          .catch((err) => console.error(`Error loading ${filePath}:`, err));
-      }
+  <script>
+    // Функція для завантаження HTML в елемент
+    function loadHTML(elementId, filePath) {
+      fetch(filePath)
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById(elementId).innerHTML = data;
+        })
+        .catch((err) => console.error(`Error loading ${filePath}:`, err));
+    }
 
-      // Завантажуємо відповідні частини сторінки
-      loadHTML("header", "/partials/header.html");
-      loadHTML("news-container", "/partials/news.html");
-      loadHTML("hero", "/partials/hero.html");
-      loadHTML("informations", "/partials/informations.html");
-      loadHTML("competitions", "/partials/competitions.html");
-      loadHTML("news", "/partials/news.html");
-      loadHTML("partners", "/partials/partners.html");
-      loadHTML("footer", "/partials/footer.html");
-      loadHTML("mob-menu", "/partials/mob-menu.html");
-    </script>
+    // Завантажуємо відповідні частини сторінки
+    loadHTML("header", "/partials/header.html");
+    loadHTML("news-container", "/partials/news.html");
+    loadHTML("hero", "/partials/hero.html");
+    loadHTML("informations", "/partials/informations.html");
+    loadHTML("competitions", "/partials/competitions.html");
+    loadHTML("news", "/partials/news.html");
+    loadHTML("partners", "/partials/partners.html");
+    loadHTML("footer", "/partials/footer.html");
+    loadHTML("mob-menu", "/partials/mob-menu.html");
+  </script>
 
-    <script>
-      // Показати модальне вікно
-      document.getElementById("admin-btn").addEventListener("click", () => {
-        document.getElementById("login-modal").style.display = "block";
+  <script>
+    // Показати модальне вікно
+    document.getElementById("admin-btn").addEventListener("click", () => {
+      document.getElementById("login-modal").style.display = "block";
+    });
+
+    // Обробка логіну
+    document
+      .getElementById("login-form")
+      .addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const password = document.getElementById("admin-password").value;
+
+        const res = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ password }),
+        });
+
+        if (res.ok) {
+          window.location.href = "/admin.html";
+        } else {
+          alert("Невірний пароль!");
+        }
       });
 
-      // Обробка логіну
-      document
-        .getElementById("login-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const password = document.getElementById("admin-password").value;
-
-          const res = await fetch("/api/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ password }),
-          });
-
-          if (res.ok) {
-            window.location.href = "/admin.html";
-          } else {
-            alert("Невірний пароль!");
-          }
+    // Завантаження новин
+    fetch("/api/news")
+      .then((res) => res.json())
+      .then((data) => {
+        const container = document.getElementById("news-container");
+        data.forEach((news) => {
+          const item = document.createElement("div");
+          item.innerHTML = `<h3>${news.title}</h3><p>${news.content}</p>`;
+          container.appendChild(item);
         });
+      });
+  </script>
+  <script type="module" src="./main.js"></script>
+  <script type="module" src="./js/mob-menu.js"></script>
+</body>
 
-      // Завантаження новин
-      fetch("/api/news")
-        .then((res) => res.json())
-        .then((data) => {
-          const container = document.getElementById("news-container");
-          data.forEach((news) => {
-            const item = document.createElement("div");
-            item.innerHTML = `<h3>${news.title}</h3><p>${news.content}</p>`;
-            container.appendChild(item);
-          });
-        });
-    </script>
-    <script type="module" src="./main.js"></script>
-  </body>
 </html>
