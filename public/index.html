@@ -1,57 +1,75 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ua">
   <head>
     <meta charset="UTF-8" />
-    <title>Мій сайт</title>
-    <link rel="stylesheet" href="styles.css" />
-    <style>
-      /* Стилі для модального вікна */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-
-      .modal-content {
-        background-color: #fff;
-        margin: 15% auto;
-        padding: 20px;
-        width: 300px;
-        border-radius: 5px;
-      }
-
-      .modal-content input {
-        width: 100%;
-        margin-bottom: 10px;
-        padding: 5px;
-      }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASTMK</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
+
   <body>
-    <header><h1>Вітання на нашому сайті!</h1></header>
+    <div id="header"></div>
 
-    <main id="news-container"></main>
-
+    <main>
+      <div id="hero"></div>
+      <!-- <div id="informations"></div>
+      <div id="competitions"></div>
+      <div id="news"></div>
+      <div id="partners"></div>
+      <div id="mob-menu"></div> -->
+    </main>
     <footer>
-      <button id="admin-btn">Адмін-панель</button>
+      <!-- <div id="footer"></div>
+      <button id="admin-btn">Адмін-панель</button> -->
     </footer>
 
     <!-- Модальне вікно -->
-    <div id="login-modal" class="modal">
+    <!-- <div id="login-modal" class="modal">
       <div class="modal-content">
         <h3>Увійти як Адміністратор</h3>
         <form id="login-form">
-          <input type="password" id="admin-password" placeholder="Пароль" required />
+          <input
+            type="password"
+            id="admin-password"
+            placeholder="Пароль"
+            required
+          />
           <button type="submit">Увійти</button>
         </form>
       </div>
-    </div>
+    </div> -->
+    <script>
+      // Функція для завантаження HTML в елемент
+      function loadHTML(elementId, filePath) {
+        fetch(filePath)
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById(elementId).innerHTML = data;
+          })
+          .catch((err) => console.error(`Error loading ${filePath}:`, err));
+      }
+
+      // Завантажуємо відповідні частини сторінки
+      loadHTML("header", "/partials/header.html");
+      loadHTML("news-container", "/partials/news.html");
+      loadHTML("hero", "/partials/hero.html");
+      loadHTML("informations", "/partials/informations.html");
+      loadHTML("competitions", "/partials/competitions.html");
+      loadHTML("news", "/partials/news.html");
+      loadHTML("partners", "/partials/partners.html");
+      loadHTML("footer", "/partials/footer.html");
+      loadHTML("mob-menu", "/partials/mob-menu.html");
+    </script>
 
     <script>
       // Показати модальне вікно
@@ -60,24 +78,26 @@
       });
 
       // Обробка логіну
-      document.getElementById("login-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const password = document.getElementById("admin-password").value;
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const password = document.getElementById("admin-password").value;
 
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ password }),
+          const res = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ password }),
+          });
+
+          if (res.ok) {
+            window.location.href = "/admin.html";
+          } else {
+            alert("Невірний пароль!");
+          }
         });
-
-        if (res.ok) {
-          window.location.href = "/admin.html";
-        } else {
-          alert("Невірний пароль!");
-        }
-      });
 
       // Завантаження новин
       fetch("/api/news")
@@ -91,5 +111,6 @@
           });
         });
     </script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
