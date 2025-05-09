@@ -38,6 +38,7 @@
   cursor: pointer;
   margin-left: 130px;
   margin-bottom: 150px;
+  margin-top: 25px;
 }
 
 .mobile-nav {
@@ -46,18 +47,26 @@
 }
 
 .mobile-nav li {
-  margin-bottom: 24px;
+  margin-bottom: 40px;
   border: 1px solid #fbfbfb;
   border-radius: 12px;
-  padding: 16px 24px;
-  width: 157px;
-  height: 56px;
+  padding: 14px 16px;
+  width: 100%;
+  height: 44px;
   text-decoration: none;
 
   font-weight: 500;
-  font-size: 22px;
+  font-size: 14px;
   text-align: center;
   color: #fbfbfb;
+
+  transition: background-color cubic-bezier(1, 0, 0, 1);
+}
+
+.mobile-nav li:hover,
+.mobile-nav li:focus {
+  background-color: #fbfbfb;
+  color: #001d05;
 }
 
 .mobile_menu {
@@ -68,6 +77,6 @@
   display: block;
 }
 
-.mobile-nav li:hover, .mobile-nav li:focus {
-    
+.mobile-nav li:hover,
+.mobile-nav li:focus {
 }

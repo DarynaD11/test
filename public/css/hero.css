@@ -1,5 +1,4 @@
-
-  /* Мобільна версія */
+/* Мобільна версія */
 .hero-container {
   height: 100%;
   max-width: 100%;
@@ -36,3 +35,43 @@ video {
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+@media only screen and (min-width: 768px) {
+  .hero-container {
+    height: 100%;
+    max-width: 100%;
+    padding: 302px 20px 300px 20px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 40px;
+    margin: 0 auto;
+    min-width: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    object-position: center;
+    z-index: -1;
+  }
+
+  .hero-title {
+    font-family: var(--font-family);
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 1.89;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: rgba(228, 255, 239, 0.76);
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+}
