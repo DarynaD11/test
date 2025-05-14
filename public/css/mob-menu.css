@@ -80,3 +80,15 @@
 .mobile-nav li:hover,
 .mobile-nav li:focus {
 }
+
+.mobile-social {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.social {
+  fill: #fbfbfb;
+}
